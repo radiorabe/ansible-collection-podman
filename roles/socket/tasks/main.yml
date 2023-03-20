@@ -1,0 +1,5 @@
+---
+- name: Enable podman.socket unit
+  ansible.builtin.systemd:
+    name: podman.socket
+    enabled: "{{ radiorabe_podman_socket_enabled | default(true) }}"

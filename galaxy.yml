@@ -1,0 +1,16 @@
+namespace: radiorabe
+name: podman
+version: 0.0.0
+readme: README.md
+authors:
+  - Lucas Bickel <@hairmare>
+description: Roles managing Podman (what's missing from lsr.podman)
+license_file: LICENSE
+tags:
+  - radiorabe
+  - podman
+dependencies: {}
+repository: https://github.com/radiorabe/ansible-collection-podman
+documentation: https://github.com/radiorabe/ansible-collection-podman/blob/main/README.md
+homepage: hhttps://github.com/radiorabe/ansible-collection-podman
+issues: https://github.com/radiorabe/ansible-collection-podman/issues

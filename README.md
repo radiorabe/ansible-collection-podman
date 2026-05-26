@@ -5,6 +5,7 @@ Contains podman roles to augment [linux-system-roles.podman](https://galaxy.ansi
 ## Roles
 
 * [`socket`](https://github.com/radiorabe/ansible-collection-podman/tree/main/roles/socket)
+* [`user_namespace`](https://github.com/radiorabe/ansible-collection-podman/tree/main/roles/user_namespace)
 
 ## License
 

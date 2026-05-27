@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: RaBe IT-Reaktion
+  description: Configure Zabbix monitoring for RaBe Podman rootless containers.
+  issue_tracker_url: https://github.com/radiorabe/ansible-collection-podman/issues
+  license: AGPL-3.0-only
+  min_ansible_version: "2.14"
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: Fedora
+      version:
+        - all
+  galaxy_tags:
+    - radiorabe
+    - podman
+    - zabbix
+    - monitoring
+dependencies: []

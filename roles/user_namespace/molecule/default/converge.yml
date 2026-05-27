@@ -1,0 +1,44 @@
+---
+
+- name: Converge
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Include user_namespace role
+      ansible.builtin.include_role:
+        name: /home/smirta/Documents/git/rabe/ansible-collection-podman/roles/user_namespace
+
+    - name: Get subuid file contents
+      ansible.builtin.slurp:
+        src: /etc/subuid
+      register: user_namespace_subuid_contents
+
+    - name: Get subgid file contents
+      ansible.builtin.slurp:
+        src: /etc/subgid
+      register: user_namespace_subgid_contents
+
+    - name: Display subuid and subgid contents
+      ansible.builtin.debug:
+        msg: |
+          Subuid file contents:
+          {{ user_namespace_subuid_contents['content'] | b64decode }}
+          Subgid file contents:
+          {{ user_namespace_subgid_contents['content'] | b64decode }}
+
+    - name: Check that subuid and subgid file contents are available as variables
+      ansible.builtin.assert:
+        that:
+          - user_namespace_subuid_contents is defined
+          - user_namespace_subuid_contents['content'] is defined
+          - user_namespace_subuid_contents['content'] | b64decode == "testuser:100000:65536\n"
+          - user_namespace_subgid_contents is defined
+          - user_namespace_subgid_contents['content'] is defined
+          - user_namespace_subgid_contents['content'] | b64decode == "testuser:100000:65536\n"
+        fail_msg: "Subuid and subgid file contents are not properly set"
+        success_msg: "All subuid and subgid file contents are properly set"
+
+    - name: Display success message
+      ansible.builtin.debug:
+        msg: "user_namespace role verification completed successfully!"

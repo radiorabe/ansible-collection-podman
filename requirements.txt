@@ -1,0 +1,8 @@
+# Python requirements for OpenBao Ansible role
+
+# Testing dependencies
+pytest>=7.0.0
+pytest-ansible>=4.0.0
+pytest-testinfra>=9.0.0
+molecule>=6.0.0
+molecule-docker>=2.1.0

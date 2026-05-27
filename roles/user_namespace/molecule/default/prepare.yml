@@ -1,0 +1,33 @@
+---
+
+- name: Prepare
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Wait for systems to become reachable
+      ansible.builtin.wait_for_connection:
+        timeout: 30
+
+    - name: Install required packages for testing
+      ansible.builtin.package:
+        name:
+          - python3
+          - python3-pip
+          - python3-packaging
+          - sudo
+        state: present
+
+    - name: Upgrade pip
+      ansible.builtin.command: python3 -m pip install --upgrade pip
+      changed_when: false
+
+    - name: Install Ansible
+      ansible.builtin.pip:
+        name:
+          - ansible-core
+        state: present
+
+    - name: Install Ansible collection dependencies
+      ansible.builtin.command: ansible-galaxy collection install radiorabe.podman radiorabe.common
+      changed_when: false

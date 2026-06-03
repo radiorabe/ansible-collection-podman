@@ -57,4 +57,3 @@
   ansible.builtin.systemd_service:
     name: zabbix-agent
     state: restarted
-    enabled: true

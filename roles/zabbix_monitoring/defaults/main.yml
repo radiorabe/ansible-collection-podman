@@ -1,0 +1,6 @@
+---
+# defaults for radiorabe.podman.zabbix_monitoring
+
+zabbix_monitoring_zabbix_user: "zabbix"
+zabbix_monitoring_zabbix_group: "{{ zabbix_monitoring_zabbix_user }}"
+zabbix_monitoring_podman_socket_enabled: true

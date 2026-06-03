@@ -1,0 +1,59 @@
+---
+- name: Create directory for rootless podman socket which is accessible by Zabbix user
+  ansible.builtin.file:
+    path: "/var/run/{{ zabbix_monitoring_podman_user }}"
+    state: directory
+    owner: "{{ zabbix_monitoring_podman_user }}"
+    group: "{{ zabbix_monitoring_zabbix_group }}"
+    mode: '0755'
+
+- name: Get podman user info
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ zabbix_monitoring_podman_user }}"
+
+- name: Setup podman.socket
+  become: true
+  become_user: "{{ zabbix_monitoring_podman_user }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ getent_passwd[zabbix_monitoring_podman_user][1] }}"
+  block:
+    - name: Create systemd user directory for podman.socket overrides
+      ansible.builtin.file:
+        path: "/home/{{ zabbix_monitoring_podman_user }}/.config/systemd/user/podman.socket.d"
+        state: directory
+        mode: '0755'
+    - name: Create systemd override for podman.socket
+      ansible.builtin.copy:
+        dest: "/home/{{ zabbix_monitoring_podman_user }}/.config/systemd/user/podman.socket.d/override.conf"
+        content: |
+          [Socket]
+          ListenStream=
+          ListenStream=/var/run/{{ zabbix_monitoring_podman_user }}/podman.sock
+          SocketMode=
+          SocketMode=0666
+        mode: '0644'
+
+    - name: Reload systemd and enable podman.socket unit
+      ansible.builtin.systemd_service:
+        name: podman.socket
+        enabled: "{{ zabbix_monitoring_podman_socket_enabled | default(true) }}"
+        daemon_reload: true
+        scope: user
+
+    - name: Restart podman.socket
+      ansible.builtin.systemd_service:
+        name: podman.socket
+        state: restarted
+        scope: user
+
+- name: Configure Zabbix agent to monitor rootless podman containers
+  ansible.builtin.lineinfile:
+    path: "/etc/zabbix/zabbix_agent2.d/plugins.d/docker.conf"
+    line: "Plugins.Docker.Endpoint=unix:///var/run/{{ zabbix_monitoring_podman_user }}/podman.sock"
+    insertafter: EOF
+
+- name: Restart Zabbix agent
+  ansible.builtin.systemd_service:
+    name: zabbix-agent2
+    state: restarted
